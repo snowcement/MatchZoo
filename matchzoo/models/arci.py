@@ -38,40 +38,40 @@ class ARCI(BasicModel):
 
     def build(self):
         query = Input(name='query', shape=(self.config['text1_maxlen'],))
-        show_layer_info('Input', query)
+        show_layer_info('Input', query)#[layer]: Input	[shape]: [None, 20]
         doc = Input(name='doc', shape=(self.config['text2_maxlen'],))
-        show_layer_info('Input', doc)
+        show_layer_info('Input', doc)#[layer]: Input	[shape]: [None, 500]
 
         embedding = Embedding(self.config['vocab_size'], self.config['embed_size'], weights=[self.config['embed']], trainable = self.embed_trainable)
         q_embed = embedding(query)
-        show_layer_info('Embedding', q_embed)
+        show_layer_info('Embedding', q_embed)#[layer]: Embedding	[shape]: [None, 20, 50]
         d_embed = embedding(doc)
-        show_layer_info('Embedding', d_embed)
+        show_layer_info('Embedding', d_embed)#[layer]: Embedding	[shape]: [None, 500, 50]
 
         q_conv1 = Conv1D(self.config['kernel_count'], self.config['kernel_size'], padding='same') (q_embed)
-        show_layer_info('Conv1D', q_conv1)
+        show_layer_info('Conv1D', q_conv1)#[layer]: Conv1D	[shape]: [None, 20, 8],here, kernel_count=8;kernel_size=3
         d_conv1 = Conv1D(self.config['kernel_count'], self.config['kernel_size'], padding='same') (d_embed)
-        show_layer_info('Conv1D', d_conv1)
+        show_layer_info('Conv1D', d_conv1)#[layer]: Conv1D	[shape]: [None, 500, 8]
 
         q_pool1 = MaxPooling1D(pool_size=self.config['q_pool_size']) (q_conv1)
-        show_layer_info('MaxPooling1D', q_pool1)
+        show_layer_info('MaxPooling1D', q_pool1)#[layer]: MaxPooling1D	[shape]: [None, 10, 8],here,q_pool_size=2
         d_pool1 = MaxPooling1D(pool_size=self.config['d_pool_size']) (d_conv1)
-        show_layer_info('MaxPooling1D', d_pool1)
+        show_layer_info('MaxPooling1D', d_pool1)#[layer]: MaxPooling1D	[shape]: [None, 250, 8],here,d_pool_size=2
 
         pool1 = Concatenate(axis=1) ([q_pool1, d_pool1])
-        show_layer_info('Concatenate', pool1)
+        show_layer_info('Concatenate', pool1)#[layer]: Concatenate	[shape]: [None, 260, 8]
 
         pool1_flat = Flatten()(pool1)
-        show_layer_info('Flatten', pool1_flat)
+        show_layer_info('Flatten', pool1_flat)#[layer]: Flatten	[shape]: [None, None]
 
         pool1_flat_drop = Dropout(rate=self.config['dropout_rate'])(pool1_flat)
-        show_layer_info('Dropout', pool1_flat_drop)
+        show_layer_info('Dropout', pool1_flat_drop)#[layer]: Dropout	[shape]: [None, None]
 
         if self.config['target_mode'] == 'classification':
             out_ = Dense(2, activation='softmax')(pool1_flat_drop)
         elif self.config['target_mode'] in ['regression', 'ranking']:
             out_ = Dense(1)(pool1_flat_drop)
-        show_layer_info('Dense', out_)
+        show_layer_info('Dense', out_)#[layer]: Dense	[shape]: [None, 1]
 
         model = Model(inputs=[query, doc], outputs=out_)
         return model

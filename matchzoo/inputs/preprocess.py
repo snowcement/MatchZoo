@@ -319,7 +319,7 @@ class NgramUtil(object):
         L = len(words)
         if L > 3:
             lst = []
-            for i in xrange(L - 3):
+            for i in range(L - 3):
                 lst.append(join_string.join([words[i], words[i + 1], words[i + 2], words[i + 3]]))
         else:
             # set it as trigram
@@ -358,9 +358,9 @@ class NgramUtil(object):
         L = len(words)
         if L > 2:
             lst = []
-            for i in xrange(L - 2):
-                for j in xrange(i + 1, L - 1):
-                    for k in xrange(j + 1, L):
+            for i in range(L - 2):
+                for j in range(i + 1, L - 1):
+                    for k in range(j + 1, L):
                         lst.append(join_string.join([words[i], words[j], words[k]]))
         else:
             # set it as biterm
@@ -377,10 +377,10 @@ class NgramUtil(object):
         L = len(words)
         if L > 3:
             lst = []
-            for i in xrange(L - 3):
-                for j in xrange(i + 1, L - 2):
-                    for k in xrange(j + 1, L - 1):
-                        for l in xrange(k + 1, L):
+            for i in range(L - 3):
+                for j in range(i + 1, L - 2):
+                    for k in range(j + 1, L - 1):
+                        for l in range(k + 1, L):
                             lst.append(join_string.join([words[i], words[j], words[k], words[l]]))
         else:
             # set it as triterm

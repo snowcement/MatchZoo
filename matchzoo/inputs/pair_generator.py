@@ -39,14 +39,14 @@ class PairBasicGenerator(object):
                 rel_set[d1] = {}
             if label not in rel_set[d1]:
                 rel_set[d1][label] = []
-            rel_set[d1][label].append(d2)
+            rel_set[d1][label].append(d2)#rel_set:{d1:{label:[d2]}}
         for d1 in rel_set:
             label_list = sorted(rel_set[d1].keys(), reverse = True)
-            for hidx, high_label in enumerate(label_list[:-1]):
+            for hidx, high_label in enumerate(label_list[:-1]):#将一个可遍历的数据对象(如列表、元组或字符串)组合为一个索引序列，同时列出数据和数据下标，一般用在 for 循环当中
                 for low_label in label_list[hidx+1:]:
                     for high_d2 in rel_set[d1][high_label]:
                         for low_d2 in rel_set[d1][low_label]:
-                            pair_list.append( (d1, high_d2, low_d2) )
+                            pair_list.append( (d1, high_d2, low_d2) )#pair_list:[(d1,high_d2,low_d2)],high_d2对应label==1的d2,low_d2对应label==0的d2
         print('Pair Instance Count:', len(pair_list), end='\n')
         return pair_list
 

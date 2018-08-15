@@ -18,6 +18,13 @@ import keras
 import keras.backend as K
 from keras.models import Sequential, Model
 
+# import sys
+# sys.path.append(r'/home/wtt/Code/MatchZoo/matchzoo/utils')
+# sys.path.append(r'/home/wtt/Code/MatchZoo/matchzoo/inputs')
+# sys.path.append(r'/home/wtt/Code/MatchZoo/matchzoo/metrics')
+# sys.path.append(r'/home/wtt/Code/MatchZoo/matchzoo/losses')
+# sys.path.append(r'/home/wtt/Code/MatchZoo/matchzoo/optimizers')
+
 from utils import *
 import inputs
 import metrics
@@ -44,13 +51,13 @@ def load_model(config):
 
 
 def train(config):
-
+    #json.dumps()用于将dict类型的数据转成str，因为如果直接将dict类型的数据写入json文件中会发生报错，因此在将数据写入时需要用到该函数
     print(json.dumps(config, indent=2), end='\n')
     # read basic config
     global_conf = config["global"]
     optimizer = global_conf['optimizer']
-    optimizer=optimizers.get(optimizer)
-    K.set_value(optimizer.lr, global_conf['learning_rate'])
+    optimizer=optimizers.get(optimizer)#总是调用keras.optimizers
+    K.set_value(optimizer.lr, global_conf['learning_rate'])#使用 Numpy 数组设置变量的值. lr:learning rate
     weights_file = str(global_conf['weights_file']) + '.%d'
     display_interval = int(global_conf['display_interval'])
     num_iters = int(global_conf['num_iters'])
@@ -74,7 +81,7 @@ def train(config):
     print('[Embedding] Embedding Load Done.', end='\n')
 
     # list all input tags and construct tags config
-    input_train_conf = OrderedDict()
+    input_train_conf = OrderedDict()#使用OrderedDict会根据放入元素的先后顺序进行排序
     input_eval_conf = OrderedDict()
     for tag in input_conf.keys():
         if 'phase' not in input_conf[tag]:
@@ -87,7 +94,7 @@ def train(config):
             input_eval_conf[tag] = {}
             input_eval_conf[tag].update(share_input_conf)
             input_eval_conf[tag].update(input_conf[tag])
-    print('[Input] Process Input Tags. %s in TRAIN, %s in EVAL.' % (input_train_conf.keys(), input_eval_conf.keys()), end='\n')
+    print('[Input] Process Input Tags. %s in TRAIN, %s in EVAL.' % (input_train_conf.keys(), input_eval_conf.keys()), end='\n')#odict_keys(['train']) in TRAIN, odict_keys(['valid', 'test']) in EVAL.
 
     # collect dataset identification
     dataset = {}

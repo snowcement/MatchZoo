@@ -19,7 +19,7 @@ def import_class(import_str):
     mod_str, _sep, class_str = import_str.rpartition('.')
     __import__(mod_str)
     try:
-        return getattr(sys.modules[mod_str], class_str)
+        return getattr(sys.modules[mod_str], class_str)#Python中所有加载到内存的模块都放在sys.modules。当import一个模块时首先会在这个列表中查找是否已经加载了此模块，如果加载了则只是将模块的名字加入到正在调用import的模块的Local名字空间中。如果没有加载则从sys.path目录中按照模块名称查找模块文件，模块文件可以是py、pyc、pyd，找到后将模块载入内存，并加入到sys.modules中，并将名称导入到当前的Local名字空间
     except AttributeError:
         raise ImportError('Class %s cannot be found (%s)' %
                 (class_str,

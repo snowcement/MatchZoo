@@ -21,14 +21,14 @@ def serialize(generator):
 
 def deserialize(name, custom_objects=None):
     return deserialize_keras_object(name,
-                                    module_objects=globals(),
+                                    module_objects=globals(),#会以字典类型返回当前位置的全部全局变量
                                     custom_objects=custom_objects,
                                     printable_module_name='loss function')
 
 def get(identifier):
     if identifier is None:
         return None
-    if isinstance(identifier, six.string_types):
+    if isinstance(identifier, six.string_types):#six专门用来兼容 Python 2 和 Python 3 的库,解决了诸如 urllib 的部分方法不兼容， str 和 bytes 类型不兼容等“知名”问题
         identifier = str(identifier)
         return deserialize(identifier)
     elif callable(identifier):
