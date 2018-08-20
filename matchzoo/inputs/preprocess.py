@@ -31,12 +31,12 @@ class Preprocess(object):
                  word_index_config = {}
                  ):
         # set default configuration
-        self._word_seg_config = { 'enable': True, 'lang': 'en' }
+        self._word_seg_config = { 'enable': True, 'lang': 'cn' }#'lang': 'en'
         self._doc_filter_config = { 'enable': True, 'min_len': 0, 'max_len': six.MAXSIZE }
-        self._word_stem_config = { 'enable': True }
-        self._word_lower_config = { 'enable': True }
-        self._word_filter_config = { 'enable': True, 'stop_words': nltk_stopwords.words('english'),
-                                     'min_freq': 1, 'max_freq': six.MAXSIZE, 'words_useless': None }
+        self._word_stem_config = { 'enable': False }#True
+        self._word_lower_config = { 'enable': False }#True
+        self._word_filter_config = { 'enable': False, 'stop_words': nltk_stopwords.words('english'),
+                                     'min_freq': 1, 'max_freq': six.MAXSIZE, 'words_useless': None }#去中文停用词在word_seg_cn函数中添加
         self._word_index_config = { 'word_dict': None }
 
         self._word_seg_config.update(word_seg_config)
@@ -55,7 +55,8 @@ class Preprocess(object):
 
         if self._word_seg_config['enable']:
             print('word_seg...')
-            docs = Preprocess.word_seg(docs, self._word_seg_config)
+            #docs = Preprocess.word_seg(docs, self._word_seg_config)
+            docs = Preprocess.word_seg_cn(docs)#使用中文语料
 
         if self._doc_filter_config['enable']:
             print('doc_filter...')
@@ -114,8 +115,16 @@ class Preprocess(object):
 
     @staticmethod
     def word_seg_cn(docs):
-        docs = [list(jieba.cut(sent)) for sent in docs]
-        return docs
+        docs = [list(jieba.cut_for_search(sent)) for sent in docs]#[list(jieba.cut(sent)) for sent in docs]
+        docs1 = []
+        #添加去停用词功能
+        with open("../../data/InsuranceQA/stopwordshagongdakuozhan.txt",encoding='utf8') as f:
+            stopWords = [line.strip() for line in f.readlines()]
+        for doc in docs:
+            doc = [w for w in doc if w not in stopWords]
+            docs1.append(doc)
+        #docs = [w for w in docs if w not in stopWords]
+        return docs1
 
     @staticmethod
     def word_seg(docs, config):
@@ -490,19 +499,19 @@ def _test_hist():
 if __name__ == '__main__':
     #_test_ngram()
     # test with sample data
-    basedir = '../../data/example/ranking/'
-    prepare = Preparation()
-    sample_file = basedir + 'sample.txt'
-    corpus, rels = prepare.run_with_one_corpus(sample_file)
-    print ('total corpus size', len(corpus))
-    print ('total relations size', len(rels))
-    prepare.save_corpus(basedir + 'corpus.txt', corpus)
-    prepare.save_relation(basedir + 'relation.txt', rels)
-    print ('preparation finished ...')
+    basedir = '/home/wtt/Code/MatchZoo/data/InsuranceQA/'#'../../data/example/ranking/'
+    # prepare = Preparation()
+    # sample_file = basedir + 'sample.txt'
+    # corpus, rels = prepare.run_with_one_corpus(sample_file)
+    # print ('total corpus size', len(corpus))
+    # print ('total relations size', len(rels))
+    # prepare.save_corpus(basedir + 'corpus.txt', corpus)
+    # prepare.save_relation(basedir + 'relation.txt', rels)
+    # print ('preparation finished ...')
 
     print ('begin preprocess...')
     # Prerpocess corpus file
-    preprocessor = Preprocess(min_freq=1)
+    preprocessor = Preprocess()#Preprocess(min_freq=1)
     dids, docs = preprocessor.run(basedir + 'corpus.txt')
     preprocessor.save_word_dict(basedir + 'word_dict.txt')
     preprocessor.save_words_stats(basedir + 'word_stats.txt')

@@ -262,13 +262,17 @@ class Preparation(object):
 
 if __name__ == '__main__':
     prepare = Preparation()
-    basedir = '../../data/example/ranking/'
+    basedir = '/home/wtt/Code/MatchZoo/data/InsuranceQA/'#'../../data/example/ranking/'
     corpus, rels = prepare.run_with_one_corpus(basedir + 'sample.txt')
     print('total corpus : %d ...' % (len(corpus)))
     print('total relations : %d ...' % (len(rels)))
     prepare.save_corpus(basedir + 'corpus.txt', corpus)
 
-    rel_train, rel_valid, rel_test = prepare.split_train_valid_test(rels, (0.8, 0.1, 0.1))
+#    rel_train, rel_valid, rel_test = prepare.split_train_valid_test(rels, (0.8, 0.1, 0.1))
+    corpus, rel_train = prepare.run_with_one_corpus(basedir + 'trainsample.txt')
+    corpus, rel_valid = prepare.run_with_one_corpus(basedir + 'validsample.txt')
+    corpus, rel_test = prepare.run_with_one_corpus(basedir + 'testsample.txt')
+
     prepare.save_relation(basedir + 'relation_train.txt', rel_train)
     prepare.save_relation(basedir + 'relation_valid.txt', rel_valid)
     prepare.save_relation(basedir + 'relation_test.txt', rel_test)
