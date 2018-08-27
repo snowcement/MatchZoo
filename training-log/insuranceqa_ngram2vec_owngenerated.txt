@@ -1,0 +1,315 @@
+{
+  "net_name": "ARCI",
+  "global": {
+    "model_type": "PY",
+    "weights_file": "/home/ubuntu1/wtt/Code/MatchZoo/examples/InsuranceQA/weights/arci_insuranceqa.weights",
+    "save_weights_iters": 10,
+    "num_iters": 400,
+    "display_interval": 10,
+    "test_weights_iters": 400,
+    "optimizer": "adam",
+    "learning_rate": 0.005
+  },
+  "inputs": {
+    "share": {
+      "text1_corpus": "/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/corpus_preprocessed.txt",
+      "text2_corpus": "/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/corpus_preprocessed.txt",
+      "use_dpool": false,
+      "embed_size": 300,
+      "vocab_size": 26836,
+      "train_embed": false,
+      "embed_path": "/home/ubuntu1/wtt/Code/embedding-data/insuranceqa.w2v.file/uni_uni/win2/sgns/embed_w2v_d300",
+      "target_mode": "ranking",
+      "text1_maxlen": 20,
+      "text2_maxlen": 100
+    },
+    "train": {
+      "input_type": "PairGenerator",
+      "phase": "TRAIN",
+      "use_iter": false,
+      "query_per_iter": 50,
+      "batch_per_iter": 5,
+      "batch_size": 100,
+      "relation_file": "/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/relation_train.txt"
+    },
+    "valid": {
+      "input_type": "ListGenerator",
+      "phase": "EVAL",
+      "batch_list": 10,
+      "relation_file": "/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/relation_train.txt"
+    },
+    "test": {
+      "input_type": "ListGenerator",
+      "phase": "EVAL",
+      "batch_list": 10,
+      "relation_file": "/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/relation_test.txt"
+    },
+    "predict": {
+      "input_type": "ListGenerator",
+      "phase": "PREDICT",
+      "batch_list": 10,
+      "relation_file": "/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/relation_test.txt"
+    }
+  },
+  "outputs": {
+    "predict": {
+      "save_format": "TREC",
+      "save_path": "/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/predict.test.arci_insuranceqa_gpu.txt"
+    }
+  },
+  "model": {
+    "model_path": "/home/ubuntu1/wtt/Code/MatchZoo/matchzoo/models/",
+    "model_py": "arci.ARCI",
+    "setting": {
+      "kernel_count": 128,
+      "kernel_size": 3,
+      "q_pool_size": 4,
+      "d_pool_size": 4,
+      "dropout_rate": 0.95
+    }
+  },
+  "losses": [
+    {
+      "object_name": "rank_hinge_loss",
+      "object_params": {
+        "margin": 1.0
+      }
+    }
+  ],
+  "metrics": [
+    "ndcg@3",
+    "ndcg@5",
+    "map"
+  ]
+}
+2018-08-26 06:45:42.899814: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1435] Adding visible gpu devices: 0
+2018-08-26 06:45:42.899845: I tensorflow/core/common_runtime/gpu/gpu_device.cc:923] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-08-26 06:45:42.899852: I tensorflow/core/common_runtime/gpu/gpu_device.cc:929]      0
+2018-08-26 06:45:42.899859: I tensorflow/core/common_runtime/gpu/gpu_device.cc:942] 0:   N
+2018-08-26 06:45:42.900205: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1053] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 15135 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-16GB, pci bus id: 0000:02:00.0, compute capability: 6.0)
+[/home/ubuntu1/wtt/Code/embedding-data/insuranceqa.w2v.file/uni_uni/win2/sgns/embed_w2v_d300]
+	Embedding size: 26836
+Generate numpy embed: (26836, 300)
+[Embedding] Embedding Load Done.
+[Input] Process Input Tags. odict_keys(['train']) in TRAIN, odict_keys(['valid', 'test']) in EVAL.
+[/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/corpus_preprocessed.txt]
+	Data size: 43133
+[Dataset] 1 Dataset Load Done.
+{'text1_corpus': '/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/corpus_preprocessed.txt', 'text2_corpus': '/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/corpus_preprocessed.txt', 'use_dpool': False, 'embed_size': 300, 'vocab_size': 26836, 'train_embed': False, 'embed_path': '/home/ubuntu1/wtt/Code/embedding-data/insuranceqa.w2v.file/uni_uni/win2/sgns/embed_w2v_d300', 'target_mode': 'ranking', 'text1_maxlen': 20, 'text2_maxlen': 100, 'embed': array([[ 2.927e-03, -7.200e-04,  1.418e-03, ...,  4.709e-03,  5.400e-05,
+        -7.730e-04],
+       [ 7.540e-04,  8.580e-04,  8.840e-04, ...,  4.501e-03, -2.803e-03,
+         9.120e-04],
+       [ 3.283e-03, -1.581e-03,  4.185e-03, ...,  6.242e-03, -1.363e-03,
+         1.382e-03],
+       ...,
+       [-1.531e-03, -6.970e-04,  1.220e-03, ...,  1.506e-03,  5.670e-04,
+        -9.010e-04],
+       [ 1.289e-03, -5.990e-04, -6.980e-04, ..., -9.000e-05,  7.810e-04,
+        -1.025e-03],
+       [ 0.000e+00,  0.000e+00,  0.000e+00, ...,  0.000e+00,  0.000e+00,
+         0.000e+00]], dtype=float32), 'input_type': 'PairGenerator', 'phase': 'TRAIN', 'use_iter': False, 'query_per_iter': 50, 'batch_per_iter': 5, 'batch_size': 100, 'relation_file': '/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/relation_train.txt'}
+[/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/relation_train.txt]
+	Instance size: 2599125
+Pair Instance Count: 5075000
+[PairGenerator] init done
+{'text1_corpus': '/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/corpus_preprocessed.txt', 'text2_corpus': '/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/corpus_preprocessed.txt', 'use_dpool': False, 'embed_size': 300, 'vocab_size': 26836, 'train_embed': False, 'embed_path': '/home/ubuntu1/wtt/Code/embedding-data/insuranceqa.w2v.file/uni_uni/win2/sgns/embed_w2v_d300', 'target_mode': 'ranking', 'text1_maxlen': 20, 'text2_maxlen': 100, 'embed': array([[ 2.927e-03, -7.200e-04,  1.418e-03, ...,  4.709e-03,  5.400e-05,
+        -7.730e-04],
+       [ 7.540e-04,  8.580e-04,  8.840e-04, ...,  4.501e-03, -2.803e-03,
+         9.120e-04],
+       [ 3.283e-03, -1.581e-03,  4.185e-03, ...,  6.242e-03, -1.363e-03,
+         1.382e-03],
+       ...,
+       [-1.531e-03, -6.970e-04,  1.220e-03, ...,  1.506e-03,  5.670e-04,
+        -9.010e-04],
+       [ 1.289e-03, -5.990e-04, -6.980e-04, ..., -9.000e-05,  7.810e-04,
+        -1.025e-03],
+       [ 0.000e+00,  0.000e+00,  0.000e+00, ...,  0.000e+00,  0.000e+00,
+         0.000e+00]], dtype=float32), 'input_type': 'ListGenerator', 'phase': 'EVAL', 'batch_list': 10, 'relation_file': '/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/relation_train.txt'}
+[/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/relation_train.txt]
+	Instance size: 2599125
+List Instance Count: 12195
+[ListGenerator] init done
+{'text1_corpus': '/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/corpus_preprocessed.txt', 'text2_corpus': '/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/corpus_preprocessed.txt', 'use_dpool': False, 'embed_size': 300, 'vocab_size': 26836, 'train_embed': False, 'embed_path': '/home/ubuntu1/wtt/Code/embedding-data/insuranceqa.w2v.file/uni_uni/win2/sgns/embed_w2v_d300', 'target_mode': 'ranking', 'text1_maxlen': 20, 'text2_maxlen': 100, 'embed': array([[ 2.927e-03, -7.200e-04,  1.418e-03, ...,  4.709e-03,  5.400e-05,
+        -7.730e-04],
+       [ 7.540e-04,  8.580e-04,  8.840e-04, ...,  4.501e-03, -2.803e-03,
+         9.120e-04],
+       [ 3.283e-03, -1.581e-03,  4.185e-03, ...,  6.242e-03, -1.363e-03,
+         1.382e-03],
+       ...,
+       [-1.531e-03, -6.970e-04,  1.220e-03, ...,  1.506e-03,  5.670e-04,
+        -9.010e-04],
+       [ 1.289e-03, -5.990e-04, -6.980e-04, ..., -9.000e-05,  7.810e-04,
+        -1.025e-03],
+       [ 0.000e+00,  0.000e+00,  0.000e+00, ...,  0.000e+00,  0.000e+00,
+         0.000e+00]], dtype=float32), 'input_type': 'ListGenerator', 'phase': 'EVAL', 'batch_list': 10, 'relation_file': '/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/relation_test.txt'}
+[/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/relation_test.txt]
+	Instance size: 403308
+List Instance Count: 1985
+[ListGenerator] init done
+[ARCI] init done
+[layer]: Input	[shape]: [None, 20]
+11.1% memory has been used
+[layer]: Input	[shape]: [None, 100]
+11.1% memory has been used
+[layer]: Embedding	[shape]: [None, 20, 300]
+11.3% memory has been used
+[layer]: Embedding	[shape]: [None, 100, 300]
+11.3% memory has been used
+[layer]: Conv1D	[shape]: [None, 20, 128]
+11.3% memory has been used
+[layer]: Conv1D	[shape]: [None, 100, 128]
+11.3% memory has been used
+[layer]: MaxPooling1D	[shape]: [None, 5, 128]
+11.3% memory has been used
+[layer]: MaxPooling1D	[shape]: [None, 25, 128]
+11.3% memory has been used
+[layer]: Concatenate	[shape]: [None, 30, 128]
+11.3% memory has been used
+[layer]: Flatten	[shape]: [None, None]
+11.3% memory has been used
+[layer]: Dropout	[shape]: [None, None]
+11.3% memory has been used
+[layer]: Dense	[shape]: [None, 1]
+11.3% memory has been used
+[Model] Model Compile Done.
+[08-26-2018 06:46:03]	[Train:train] Iter:0	loss=0.943882
+[08-26-2018 06:46:05]	[Eval:valid] Iter:0	ndcg@3=0.034453	ndcg@5=0.048597	map=0.070772
+[08-26-2018 06:48:26]	[Eval:test] Iter:0	ndcg@3=0.019706	ndcg@5=0.026520	map=0.042821
+[08-26-2018 06:48:47]	[Train:train] Iter:1	loss=0.784909
+[08-26-2018 06:48:48]	[Eval:valid] Iter:1	ndcg@3=0.038270	ndcg@5=0.052281	map=0.073721
+[08-26-2018 06:51:06]	[Eval:test] Iter:1	ndcg@3=0.020730	ndcg@5=0.027859	map=0.043569
+[08-26-2018 06:51:28]	[Train:train] Iter:2	loss=0.757191
+[08-26-2018 06:51:28]	[Eval:valid] Iter:2	ndcg@3=0.037896	ndcg@5=0.052880	map=0.073721
+[08-26-2018 06:53:47]	[Eval:test] Iter:2	ndcg@3=0.022253	ndcg@5=0.029545	map=0.044517
+[08-26-2018 06:54:09]	[Train:train] Iter:3	loss=0.783704
+[08-26-2018 06:54:09]	[Eval:valid] Iter:3	ndcg@3=0.039817	ndcg@5=0.053704	map=0.074347
+[08-26-2018 06:56:26]	[Eval:test] Iter:3	ndcg@3=0.019469	ndcg@5=0.027458	map=0.043329
+[08-26-2018 06:56:47]	[Train:train] Iter:4	loss=0.768884
+[08-26-2018 06:56:47]	[Eval:valid] Iter:4	ndcg@3=0.039657	ndcg@5=0.051976	map=0.074027
+[08-26-2018 06:59:00]	[Eval:test] Iter:4	ndcg@3=0.020946	ndcg@5=0.028584	map=0.043689
+[08-26-2018 06:59:19]	[Train:train] Iter:5	loss=0.761926
+[08-26-2018 06:59:19]	[Eval:valid] Iter:5	ndcg@3=0.040648	ndcg@5=0.053991	map=0.074918
+[08-26-2018 07:01:24]	[Eval:test] Iter:5	ndcg@3=0.024999	ndcg@5=0.033196	map=0.047450
+[08-26-2018 07:01:43]	[Train:train] Iter:6	loss=0.796581
+[08-26-2018 07:01:44]	[Eval:valid] Iter:6	ndcg@3=0.041207	ndcg@5=0.055283	map=0.075438
+[08-26-2018 07:03:51]	[Eval:test] Iter:6	ndcg@3=0.028168	ndcg@5=0.035952	map=0.049137
+[08-26-2018 07:04:10]	[Train:train] Iter:7	loss=0.812848
+[08-26-2018 07:04:10]	[Eval:valid] Iter:7	ndcg@3=0.042093	ndcg@5=0.056822	map=0.076690
+[08-26-2018 07:06:16]	[Eval:test] Iter:7	ndcg@3=0.029368	ndcg@5=0.037539	map=0.050073
+[08-26-2018 07:06:35]	[Train:train] Iter:8	loss=0.826630
+[08-26-2018 07:06:36]	[Eval:valid] Iter:8	ndcg@3=0.043157	ndcg@5=0.057236	map=0.077250
+[08-26-2018 07:08:40]	[Eval:test] Iter:8	ndcg@3=0.026953	ndcg@5=0.036752	map=0.048729
+[08-26-2018 07:08:59]	[Train:train] Iter:9	loss=0.779660
+[08-26-2018 07:09:00]	[Eval:valid] Iter:9	ndcg@3=0.043408	ndcg@5=0.057489	map=0.077643
+[08-26-2018 07:11:04]	[Eval:test] Iter:9	ndcg@3=0.026247	ndcg@5=0.034709	map=0.047816
+[08-26-2018 07:11:24]	[Train:train] Iter:10	loss=0.815091
+[08-26-2018 07:11:24]	[Eval:valid] Iter:10	ndcg@3=0.043219	ndcg@5=0.057373	map=0.077584
+[08-26-2018 07:13:28]	[Eval:test] Iter:10	ndcg@3=0.025277	ndcg@5=0.033632	map=0.047787
+[08-26-2018 07:13:48]	[Train:train] Iter:11	loss=0.781078
+[08-26-2018 07:13:48]	[Eval:valid] Iter:11	ndcg@3=0.040249	ndcg@5=0.054114	map=0.074952
+[08-26-2018 07:15:53]	[Eval:test] Iter:11	ndcg@3=0.022755	ndcg@5=0.031219	map=0.045460
+[08-26-2018 07:16:13]	[Train:train] Iter:12	loss=0.764470
+[08-26-2018 07:16:13]	[Eval:valid] Iter:12	ndcg@3=0.038985	ndcg@5=0.053305	map=0.074328
+[08-26-2018 07:18:18]	[Eval:test] Iter:12	ndcg@3=0.022073	ndcg@5=0.031096	map=0.045603
+[08-26-2018 07:18:36]	[Train:train] Iter:13	loss=0.822629
+[08-26-2018 07:18:37]	[Eval:valid] Iter:13	ndcg@3=0.039696	ndcg@5=0.053071	map=0.074784
+[08-26-2018 07:20:40]	[Eval:test] Iter:13	ndcg@3=0.022124	ndcg@5=0.030095	map=0.044862
+[08-26-2018 07:20:59]	[Train:train] Iter:14	loss=0.788484
+[08-26-2018 07:20:59]	[Eval:valid] Iter:14	ndcg@3=0.040038	ndcg@5=0.053994	map=0.075195
+[08-26-2018 07:23:04]	[Eval:test] Iter:14	ndcg@3=0.020269	ndcg@5=0.027641	map=0.043888
+[08-26-2018 07:23:24]	[Train:train] Iter:15	loss=0.767109
+[08-26-2018 07:23:24]	[Eval:valid] Iter:15	ndcg@3=0.040998	ndcg@5=0.054797	map=0.075762
+[08-26-2018 07:25:27]	[Eval:test] Iter:15	ndcg@3=0.018704	ndcg@5=0.024260	map=0.042941
+[08-26-2018 07:25:46]	[Train:train] Iter:16	loss=0.809576
+[08-26-2018 07:25:47]	[Eval:valid] Iter:16	ndcg@3=0.042203	ndcg@5=0.055850	map=0.076286
+[08-26-2018 07:27:52]	[Eval:test] Iter:16	ndcg@3=0.015348	ndcg@5=0.022918	map=0.041259
+[08-26-2018 07:28:12]	[Train:train] Iter:17	loss=0.783436
+[08-26-2018 07:28:12]	[Eval:valid] Iter:17	ndcg@3=0.041719	ndcg@5=0.054934	map=0.076019
+[08-26-2018 07:30:18]	[Eval:test] Iter:17	ndcg@3=0.017992	ndcg@5=0.022497	map=0.041871
+[08-26-2018 07:30:38]	[Train:train] Iter:18	loss=0.788497
+[08-26-2018 07:30:38]	[Eval:valid] Iter:18	ndcg@3=0.041302	ndcg@5=0.054613	map=0.075816
+[08-26-2018 07:32:41]	[Eval:test] Iter:18	ndcg@3=0.019084	ndcg@5=0.022711	map=0.042257
+[08-26-2018 07:33:00]	[Train:train] Iter:19	loss=0.817573
+[08-26-2018 07:33:00]	[Eval:valid] Iter:19	ndcg@3=0.042969	ndcg@5=0.055779	map=0.077116
+[08-26-2018 07:35:06]	[Eval:test] Iter:19	ndcg@3=0.020581	ndcg@5=0.026301	map=0.044014
+[08-26-2018 07:35:25]	[Train:train] Iter:20	loss=0.792505
+[08-26-2018 07:35:26]	[Eval:valid] Iter:20	ndcg@3=0.043153	ndcg@5=0.056340	map=0.077253
+[08-26-2018 07:37:30]	[Eval:test] Iter:20	ndcg@3=0.030519	ndcg@5=0.035791	map=0.049891
+[08-26-2018 07:37:49]	[Train:train] Iter:21	loss=0.794787
+[08-26-2018 07:37:50]	[Eval:valid] Iter:21	ndcg@3=0.042668	ndcg@5=0.055386	map=0.077055
+[08-26-2018 07:39:56]	[Eval:test] Iter:21	ndcg@3=0.030692	ndcg@5=0.038547	map=0.050999
+[08-26-2018 07:40:15]	[Train:train] Iter:22	loss=0.816817
+[08-26-2018 07:40:16]	[Eval:valid] Iter:22	ndcg@3=0.042706	ndcg@5=0.056573	map=0.077241
+[08-26-2018 07:42:21]	[Eval:test] Iter:22	ndcg@3=0.030940	ndcg@5=0.038135	map=0.051708
+[08-26-2018 07:42:40]	[Train:train] Iter:23	loss=0.828818
+[08-26-2018 07:42:40]	[Eval:valid] Iter:23	ndcg@3=0.041955	ndcg@5=0.055165	map=0.076325
+[08-26-2018 07:44:45]	[Eval:test] Iter:23	ndcg@3=0.029018	ndcg@5=0.035925	map=0.049805
+[08-26-2018 07:45:05]	[Train:train] Iter:24	loss=0.823813
+[08-26-2018 07:45:05]	[Eval:valid] Iter:24	ndcg@3=0.040790	ndcg@5=0.053490	map=0.075321
+[08-26-2018 07:47:10]	[Eval:test] Iter:24	ndcg@3=0.024181	ndcg@5=0.032476	map=0.046643
+[08-26-2018 07:47:29]	[Train:train] Iter:25	loss=0.878875
+[08-26-2018 07:47:29]	[Eval:valid] Iter:25	ndcg@3=0.040222	ndcg@5=0.052363	map=0.074654
+[08-26-2018 07:49:34]	[Eval:test] Iter:25	ndcg@3=0.017424	ndcg@5=0.024708	map=0.041857
+[08-26-2018 07:49:53]	[Train:train] Iter:26	loss=0.770343
+[08-26-2018 07:49:53]	[Eval:valid] Iter:26	ndcg@3=0.040704	ndcg@5=0.052452	map=0.075079
+[08-26-2018 07:51:59]	[Eval:test] Iter:26	ndcg@3=0.014553	ndcg@5=0.020773	map=0.040045
+[08-26-2018 07:52:19]	[Train:train] Iter:27	loss=0.789989
+[08-26-2018 07:52:19]	[Eval:valid] Iter:27	ndcg@3=0.040849	ndcg@5=0.052762	map=0.075019
+[08-26-2018 07:54:23]	[Eval:test] Iter:27	ndcg@3=0.014892	ndcg@5=0.020260	map=0.039799
+[08-26-2018 07:54:42]	[Train:train] Iter:28	loss=0.827623
+[08-26-2018 07:54:42]	[Eval:valid] Iter:28	ndcg@3=0.041712	ndcg@5=0.053868	map=0.075686
+[08-26-2018 07:56:49]	[Eval:test] Iter:28	ndcg@3=0.013934	ndcg@5=0.019607	map=0.039332
+[08-26-2018 07:57:09]	[Train:train] Iter:29	loss=0.825937
+[08-26-2018 07:57:09]	[Eval:valid] Iter:29	ndcg@3=0.042055	ndcg@5=0.054656	map=0.076024
+[08-26-2018 07:59:12]	[Eval:test] Iter:29	ndcg@3=0.016134	ndcg@5=0.019198	map=0.039625
+[08-26-2018 07:59:31]	[Train:train] Iter:30	loss=0.844360
+[08-26-2018 07:59:32]	[Eval:valid] Iter:30	ndcg@3=0.041000	ndcg@5=0.054688	map=0.075914
+[08-26-2018 08:01:37]	[Eval:test] Iter:30	ndcg@3=0.015651	ndcg@5=0.021241	map=0.040257
+[08-26-2018 08:01:58]	[Train:train] Iter:31	loss=0.832741
+[08-26-2018 08:01:58]	[Eval:valid] Iter:31	ndcg@3=0.041655	ndcg@5=0.055525	map=0.076262
+[08-26-2018 08:04:03]	[Eval:test] Iter:31	ndcg@3=0.019171	ndcg@5=0.025657	map=0.043222
+[08-26-2018 08:04:23]	[Train:train] Iter:32	loss=0.782801
+[08-26-2018 08:04:23]	[Eval:valid] Iter:32	ndcg@3=0.042858	ndcg@5=0.057004	map=0.077097
+[08-26-2018 08:06:28]	[Eval:test] Iter:32	ndcg@3=0.020420	ndcg@5=0.027987	map=0.044680
+[08-26-2018 08:06:48]	[Train:train] Iter:33	loss=0.793414
+[08-26-2018 08:06:48]	[Eval:valid] Iter:33	ndcg@3=0.043136	ndcg@5=0.057000	map=0.077534
+[08-26-2018 08:08:54]	[Eval:test] Iter:33	ndcg@3=0.020641	ndcg@5=0.029246	map=0.044963
+[08-26-2018 08:09:13]	[Train:train] Iter:34	loss=0.797732
+[08-26-2018 08:09:13]	[Eval:valid] Iter:34	ndcg@3=0.042749	ndcg@5=0.056516	map=0.077196
+[08-26-2018 08:11:19]	[Eval:test] Iter:34	ndcg@3=0.020215	ndcg@5=0.028524	map=0.044126
+[08-26-2018 08:11:39]	[Train:train] Iter:35	loss=0.813704
+[08-26-2018 08:11:39]	[Eval:valid] Iter:35	ndcg@3=0.041080	ndcg@5=0.055205	map=0.076097
+[08-26-2018 08:13:43]	[Eval:test] Iter:35	ndcg@3=0.016875	ndcg@5=0.022148	map=0.040715
+[08-26-2018 08:14:02]	[Train:train] Iter:36	loss=0.755422
+[08-26-2018 08:14:03]	[Eval:valid] Iter:36	ndcg@3=0.040913	ndcg@5=0.055378	map=0.076143
+[08-26-2018 08:16:09]	[Eval:test] Iter:36	ndcg@3=0.016164	ndcg@5=0.022150	map=0.040435
+[08-26-2018 08:16:27]	[Train:train] Iter:37	loss=0.834660
+[08-26-2018 08:16:28]	[Eval:valid] Iter:37	ndcg@3=0.041895	ndcg@5=0.055441	map=0.076439
+[08-26-2018 08:18:31]	[Eval:test] Iter:37	ndcg@3=0.015969	ndcg@5=0.022176	map=0.040665
+[08-26-2018 08:18:50]	[Train:train] Iter:38	loss=0.753030
+[08-26-2018 08:18:50]	[Eval:valid] Iter:38	ndcg@3=0.042801	ndcg@5=0.056004	map=0.077123
+[08-26-2018 08:20:55]	[Eval:test] Iter:38	ndcg@3=0.016969	ndcg@5=0.023686	map=0.041379
+[08-26-2018 08:21:14]	[Train:train] Iter:39	loss=0.830514
+[08-26-2018 08:21:14]	[Eval:valid] Iter:39	ndcg@3=0.042664	ndcg@5=0.056425	map=0.077235
+[08-26-2018 08:23:18]	[Eval:test] Iter:39	ndcg@3=0.016012	ndcg@5=0.023887	map=0.041453
+[08-26-2018 08:23:37]	[Train:train] Iter:40	loss=0.780007
+[08-26-2018 08:23:37]	[Eval:valid] Iter:40	ndcg@3=0.043360	ndcg@5=0.057159	map=0.077591
+[08-26-2018 08:25:41]	[Eval:test] Iter:40	ndcg@3=0.018106	ndcg@5=0.025216	map=0.042248
+[08-26-2018 08:26:01]	[Train:train] Iter:41	loss=0.893606
+[08-26-2018 08:26:01]	[Eval:valid] Iter:41	ndcg@3=0.044506	ndcg@5=0.058076	map=0.078315
+[08-26-2018 08:28:04]	[Eval:test] Iter:41	ndcg@3=0.021470	ndcg@5=0.029609	map=0.044086
+[08-26-2018 08:28:23]	[Train:train] Iter:42	loss=0.845102
+[08-26-2018 08:28:24]	[Eval:valid] Iter:42	ndcg@3=0.044040	ndcg@5=0.057983	map=0.077991
+[08-26-2018 08:30:26]	[Eval:test] Iter:42	ndcg@3=0.028545	ndcg@5=0.034269	map=0.048563
+[08-26-2018 08:30:45]	[Train:train] Iter:43	loss=0.817448
+[08-26-2018 08:30:45]	[Eval:valid] Iter:43	ndcg@3=0.040675	ndcg@5=0.055472	map=0.075414
+[08-26-2018 08:32:51]	[Eval:test] Iter:43	ndcg@3=0.025080	ndcg@5=0.033245	map=0.046314
+[08-26-2018 08:33:09]	[Train:train] Iter:44	loss=0.777566
+[08-26-2018 08:33:09]	[Eval:valid] Iter:44	ndcg@3=0.041506	ndcg@5=0.055830	map=0.076147
+[08-26-2018 08:35:13]	[Eval:test] Iter:44	ndcg@3=0.029270	ndcg@5=0.035721	map=0.049432
+[08-26-2018 08:35:32]	[Train:train] Iter:45	loss=0.808652
+[08-26-2018 08:35:33]	[Eval:valid] Iter:45	ndcg@3=0.040056	ndcg@5=0.054644	map=0.075260
+[08-26-2018 08:37:35]	[Eval:test] Iter:45	ndcg@3=0.028398	ndcg@5=0.035437	map=0.049224
+[08-26-2018 08:37:54]	[Train:train] Iter:46	loss=0.803908
+[08-26-2018 08:37:55]	[Eval:valid] Iter:46	ndcg@3=0.041879	ndcg@5=0.056288	map=0.076401
+[08-26-2018 08:39:59]	[Eval:test] Iter:46	ndcg@3=0.025794	ndcg@5=0.033792	map=0.047643
