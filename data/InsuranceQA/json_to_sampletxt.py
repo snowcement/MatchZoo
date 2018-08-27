@@ -26,6 +26,8 @@ def Json_to_Sampletxt(questiondir, answerdir,outfiledir,outfiledir1,maxLen,wtyle
         oneqa = content[str(index)]
         quzh = oneqa['zh']#问题，中文
         anwlst = oneqa['answers']#正确答案的序号列表
+        anwnum = len(anwlst)
+        negnum = knegsample*anwnum
         neglst = oneqa['negatives']#负样本的序号列表
         for ianw in range(len(anwlst)):
             i = anwlst[ianw]
@@ -36,7 +38,7 @@ def Json_to_Sampletxt(questiondir, answerdir,outfiledir,outfiledir1,maxLen,wtyle
             anwzh = "".join(anwzh.split())
             fout.write("1\t%s\t%s\n" %(quzh, anwzh))
             fout1.write("1\t%s\t%s\n" % (quzh, anwzh))
-        for ineg in range(len(neglst)):
+        for ineg in range(min(len(neglst), negnum)):
             i = neglst[ineg]
             oneneg = answer[i]
             negzh = oneneg['zh']#负样本，中文
@@ -50,7 +52,8 @@ def Json_to_Sampletxt(questiondir, answerdir,outfiledir,outfiledir1,maxLen,wtyle
     return
 
 if __name__ == '__main__':
-
+    #添加负采样频率
+    knegsample = 10
     Json_to_Sampletxt(r'./train.json', r'./answers.json', r'./sample.txt', r'./trainsample.txt',12889,'w')
     Json_to_Sampletxt(r'./valid.json', r'./answers.json',r'./sample.txt', r'./validsample.txt',2000,'a+')
     Json_to_Sampletxt(r'./test.json', r'./answers.json', r'./sample.txt', r'./testsample.txt', 2000,'a+')
