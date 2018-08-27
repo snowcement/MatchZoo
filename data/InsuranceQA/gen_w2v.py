@@ -100,7 +100,8 @@ def load_word_embedding(vocab, w2v_file):
 
     oov_word_list = [w for w in vocab if w not in pre_trained]
     print('oov word list example (30): ', oov_word_list[:30])
-    pickle.dump(oov_word_list, open('oov.p', 'wb'), protocol=2)#记录没有对应词向量的词文件，oov:out of vector
+    basedir = r'/home/ubuntu1/wtt/Code/embedding-data/insuranceqa.w2v.file/'
+    pickle.dump(oov_word_list, open(basedir+'uni_uni/win2/sgns/oov.p', 'wb'), protocol=2)#记录没有对应词向量的词文件，oov:out of vector
 
     embeddings = np.array(embeddings, dtype=np.float32)
     return embeddings
@@ -127,9 +128,10 @@ if __name__ == '__main__':
 
     #每一行包含一个单词及其词向量。每个值由空格分开。第一行记录元信息：第一个数字表示该单词在文件中的排序，第二个数字表示维度大小。
     # Word2vec / Skip-Gram with Negative Sampling (SGNS)
-    w2v_file = '/home/wtt/Code/MatchZoo/data/InsuranceQA/sgns.wiki.word'
-    word_dict_file = '/home/wtt/Code/MatchZoo/data/InsuranceQA/word_dict.txt'
-    mapped_w2v_file = '/home/wtt/Code/MatchZoo/data/InsuranceQA/embed_w2v_d300'
+    basedir = r'/home/ubuntu1/wtt/Code/embedding-data/insuranceqa.w2v.file/'
+    w2v_file = basedir+'uni_uni/win2/sgns/sgns.words'
+    word_dict_file = '/home/ubuntu1/wtt/Code/MatchZoo/data/InsuranceQA/word_dict.txt'
+    mapped_w2v_file = basedir+'uni_uni/win2/sgns/embed_w2v_d300'
     word_dict = {}
 
     print('load word dict ...')
