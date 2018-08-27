@@ -10,7 +10,11 @@ from keras.optimizers import Adam
 from model import BasicModel
 
 from utils.utility import *
-
+'''
+Siamese网络架构，对于两个不同的输入运行相同的CNN，然后比较它们matching degree
+ARC-I具有灵活性，但继承Siamese缺点，两句子在建模过程中是独立的，
+没有任何交互行为，直到最后生成抽象的向量表示后才有交互行为，使得句子在抽象建模过程中丧失很多语义细节，过早失去句子间语义交互计算的机会
+'''
 class ARCI(BasicModel):
     def __init__(self, config):
         super(ARCI, self).__init__(config)

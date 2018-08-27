@@ -31,12 +31,12 @@ class Preprocess(object):
                  word_index_config = {}
                  ):
         # set default configuration
-        self._word_seg_config = { 'enable': True, 'lang': 'cn' }#'lang': 'en'
+        self._word_seg_config = { 'enable': True, 'lang': 'en' }#'lang': 'cn'
         self._doc_filter_config = { 'enable': True, 'min_len': 0, 'max_len': six.MAXSIZE }
-        self._word_stem_config = { 'enable': False }#True
-        self._word_lower_config = { 'enable': False }#True
-        self._word_filter_config = { 'enable': False, 'stop_words': nltk_stopwords.words('english'),
-                                     'min_freq': 1, 'max_freq': six.MAXSIZE, 'words_useless': None }#去中文停用词在word_seg_cn函数中添加
+        self._word_stem_config = { 'enable': True }#False
+        self._word_lower_config = { 'enable': True }#False
+        self._word_filter_config = { 'enable': True, 'stop_words': nltk_stopwords.words('english'),
+                                     'min_freq': 1, 'max_freq': six.MAXSIZE, 'words_useless': None }#False, 去中文停用词在word_seg_cn函数中添加
         self._word_index_config = { 'word_dict': None }
 
         self._word_seg_config.update(word_seg_config)
@@ -55,8 +55,8 @@ class Preprocess(object):
 
         if self._word_seg_config['enable']:
             print('word_seg...')
-            #docs = Preprocess.word_seg(docs, self._word_seg_config)
-            docs = Preprocess.word_seg_cn(docs)#使用中文语料
+            docs = Preprocess.word_seg(docs, self._word_seg_config)
+            #docs = Preprocess.word_seg_cn(docs)#使用中文语料
 
         if self._doc_filter_config['enable']:
             print('doc_filter...')

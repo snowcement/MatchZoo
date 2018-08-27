@@ -35,6 +35,20 @@ config = tensorflow.ConfigProto()
 config.gpu_options.allow_growth = True
 sess = tensorflow.Session(config = config)
 
+# class LossHistory(keras.callbacks.Callback):
+#     def on_train_begin(self, logs={}):
+#         self.losses = []
+#         self.map = []
+#         self.ndcg3 = []
+#         self.ndcg5 = []
+#
+#
+#     def on_batch_end(self, batch, logs={}):
+#         self.losses.append(logs.get('loss'))
+#         self.map.append(logs.get('map'))
+#         self.ndcg3.append(logs.get('ndcg@3'))
+#         self.ndcg5.append(logs.get('ndcg@5'))
+
 def load_model(config):
     global_conf = config["global"]
     model_type = global_conf['model_type']
@@ -148,9 +162,14 @@ def train(config):
             eval_metrics[mobj] = metrics.get(mobj)
     model.compile(optimizer=optimizer, loss=loss)
     print('[Model] Model Compile Done.', end='\n')
+    #add tensorboard check
+    # board = keras.callbacks.TensorBoard(log_dir='../data/toy_example/logs', histogram_freq=0)
+    # history = LossHistory()
 
-    for i_e in range(num_iters):
+    for i_e in range(num_iters):#num_iters类似epochs
         for tag, generator in train_gen.items():
+            #genfun生成器生成batch_size*2个样本（一半正样本，一半负样本）
+            #display_interval = len(pair_list)//(batch_size*2)
             genfun = generator.get_batch_generator()
             print('[%s]\t[Train:%s] ' % (time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(time.time())), tag), end='')
             history = model.fit_generator(
@@ -158,7 +177,8 @@ def train(config):
                     steps_per_epoch = display_interval,
                     epochs = 1,
                     shuffle=False,
-                    verbose = 0
+                    verbose = 0,
+                    #callbacks = [history, board]
                 ) #callbacks=[eval_map])
             print('Iter:%d\tloss=%.6f' % (i_e, history.history['loss'][0]), end='\n')
 

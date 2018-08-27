@@ -98,6 +98,7 @@ class ListGenerator(ListBasicGenerator):
                     ID_pairs.append((d1, d2))
                     Y[j] = l
                     j += 1
+            #X1:d1, X2:d2, Y:label, ID_pairs:(d1,d2), list_count
             yield X1, X1_len, X2, X2_len, Y, ID_pairs, list_count
 
     def get_batch_generator(self):

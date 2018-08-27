@@ -122,7 +122,7 @@ class PairGenerator(PairBasicGenerator):
         X1[:] = self.fill_word
         X2[:] = self.fill_word
         for i in range(self.batch_size):
-            d1, d2p, d2n = random.choice(self.pair_list)
+            d1, d2p, d2n = random.choice(self.pair_list)#d2p:d2 positive, d2n:d2 negative
             d1_cont = list(self.data1[d1])
             d2p_cont = list(self.data2[d2p])
             d2n_cont = list(self.data2[d2n])
@@ -150,10 +150,12 @@ class PairGenerator(PairBasicGenerator):
                 X1[:] = self.fill_word
                 X2[:] = self.fill_word
                 for i in range(self.batch_size):
+                    '''pair_list大小5075000，从中随机抽取batch_size(e.g.1024)次，生成2048个样本，一半为正样本一半为负样本'''
                     d1, d2p, d2n = random.choice(self.pair_list)
                     d1_len = min(self.data1_maxlen, len(list(self.data1[d1])))
                     d2p_len = min(self.data2_maxlen, len(list(self.data2[d2p])))
                     d2n_len = min(self.data2_maxlen, len(list(self.data2[d2n])))
+                    '''偶数索引对应正样本，Y=1，奇数索引对应负样本，Y=0'''
                     X1[i*2,   :d1_len],  X1_len[i*2]   = self.data1[d1][:d1_len],   d1_len
                     X2[i*2,   :d2p_len], X2_len[i*2]   = self.data2[d2p][:d2p_len], d2p_len
                     X1[i*2+1, :d1_len],  X1_len[i*2+1] = self.data1[d1][:d1_len],   d1_len
